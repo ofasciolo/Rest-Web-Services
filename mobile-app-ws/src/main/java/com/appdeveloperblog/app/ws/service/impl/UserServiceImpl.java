@@ -148,6 +148,10 @@ public class UserServiceImpl implements UserService {
 		return returnValue;
 	}
 	
+	public boolean requestPasswordReset(String email) {
+		return false;
+	}
+	
 	//PUT
 	public UserDTO updateUser(UserDTO user, String userId) {
 		

@@ -31,6 +31,7 @@ import com.appdeveloperblog.app.ws.shared.dto.AddressDTO;
 import com.appdeveloperblog.app.ws.shared.dto.UserDTO;
 import com.appdeveloperblog.app.ws.ui.model.request.UserDetailsRequestModel;
 import com.appdeveloperblog.app.ws.ui.model.response.AddressResponseModel;
+import com.appdeveloperblog.app.ws.ui.model.request.PasswordResetRequestModel;
 import com.appdeveloperblog.app.ws.ui.model.response.ErrorMessages;
 import com.appdeveloperblog.app.ws.ui.model.response.OperationStatusModel;
 import com.appdeveloperblog.app.ws.ui.model.response.RequestOperationName;
@@ -145,6 +146,18 @@ public class UserController {
 		UserDTO createUser = userService.createUser(userDto);
 		UserResponseModel returnValue = modelMapper.map(createUser, UserResponseModel.class);
 
+		return returnValue;
+	}
+	
+	@PostMapping(path = "/password-reset-request", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+	public OperationStatusModel requestPasswordReset(@RequestBody PasswordResetRequestModel passwordResetRequestModel) {
+		
+		OperationStatusModel returnValue = new OperationStatusModel(); 
+		
+		boolean operationResult = userService.requestPasswordReset(passwordResetRequestModel.getEmail());
+	
+		
+		
 		return returnValue;
 	}
 	
