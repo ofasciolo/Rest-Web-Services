@@ -1,5 +1,0 @@
-package com.appdeveloperblog.app.ws.ui.model.request;
-
-public class AddressRequestModel {
-
-}
