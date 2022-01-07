@@ -1,5 +1,7 @@
 package com.appdeveloperblog.app.ws.shared;
 
+import java.util.Objects;
+
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsyncClientBuilder;
@@ -8,39 +10,51 @@ import com.amazonaws.services.simpleemail.model.Content;
 import com.amazonaws.services.simpleemail.model.Destination;
 import com.amazonaws.services.simpleemail.model.Message;
 import com.amazonaws.services.simpleemail.model.SendEmailRequest;
+import com.amazonaws.services.simpleemail.model.SendEmailResult;
 import com.appdeveloperblog.app.ws.shared.dto.UserDTO;
 
 public class AmazonSES {
-	final String FROM = "ornui.99.of@gmail.com"; //this address must be verified with AWS SES
-	final String SUBJECT = "One last step to complete your registration with RestApp";
-	final String HTMLBODY = "<h1>Please verify your email address</h1>"
-			+ "<p>Thank you for registering with our mobile app. To complete registration process and be able to log in,"
-			+ " click on the following link: "
-			+ "<a href='http://ec2-54-67-70-58.us-west-1.compute.amazonaws.com:8080/verification-service/email-verification.html?token=$tokenValue'>"
-			+ "Final step to complete your registration" + "</a><br/><br/>"
-			+ "Thank you! And we are waiting for you inside!";
 
-	// The email body for recipients with non-HTML email clients.
-	final String TEXTBODY = "Please verify your email address. "
-			+ "Thank you for registering with our mobile app. To complete registration process and be able to log in,"
-			+ " open then the following URL in your browser window: "
-			+ " http://ec2-54-67-70-58.us-west-1.compute.amazonaws.com:8080/verification-service/email-verification.html?token=$tokenValue"
-			+ " Thank you! And we are waiting for you inside!";
-	
 	public void verifyEmail(UserDTO user) {
-
+		
 		AmazonSimpleEmailService client = AmazonSimpleEmailServiceAsyncClientBuilder.standard().withRegion(Regions.SA_EAST_1).build();
 		
-		String htmlBody = HTMLBODY.replace("$tokenValue", user.getEmailVerificationToken()); 
-		String textBody = TEXTBODY.replace("$tokenValue", user.getEmailVerificationToken());
+		String htmlBody = EmailConstants.EMAIL_VERIFICATION_HTML_BODY.replace("$tokenValue", user.getEmailVerificationToken()); 
+		String textBody = EmailConstants.EMAIL_VERIFICATION_TEXT_BODY.replace("$tokenValue", user.getEmailVerificationToken());
 		
 		SendEmailRequest request = new SendEmailRequest().withDestination(new Destination().withToAddresses(user.getEmail()))
 							.withMessage(new Message().withBody(new Body().withHtml(new Content().withCharset("UTF-8").withData(htmlBody))
 							.withText(new Content().withCharset("UTF-8").withData(textBody)))
-							.withSubject(new Content().withCharset("UTF-8").withData(SUBJECT)))
-							.withSource(FROM);
+							.withSubject(new Content().withCharset("UTF-8").withData(EmailConstants.EMAIL_VERIFICATION_SUBJECT)))
+							.withSource(EmailConstants.FROM);
 		
 		client.sendEmail(request);
-		System.out.print("Email Sent!");
+	}
+	
+	public Boolean sendPasswordResetRequest(String firstName, String email, String token) {
+		
+		Boolean returnValue = Boolean.FALSE; 
+		
+		AmazonSimpleEmailService client = AmazonSimpleEmailServiceAsyncClientBuilder.standard().withRegion(Regions.SA_EAST_1).build();
+		
+		String htmlBody = EmailConstants.EMAIL_VERIFICATION_HTML_BODY.replace("$tokenValue", token); 
+		htmlBody = htmlBody.replace("$firstName", firstName);
+		
+		String textBody = EmailConstants.EMAIL_VERIFICATION_TEXT_BODY.replace("$tokenValue", token);
+		textBody = textBody.replace("$firstName", firstName);
+		
+		SendEmailRequest request = new SendEmailRequest().withDestination(new Destination().withToAddresses(email))
+							.withMessage(new Message().withBody(new Body().withHtml(new Content().withCharset("UTF-8").withData(htmlBody))
+							.withText(new Content().withCharset("UTF-8").withData(textBody)))
+							.withSubject(new Content().withCharset("UTF-8").withData(EmailConstants.PASSWORD_RESET_SUBJECT)))
+							.withSource(EmailConstants.FROM);
+		
+		SendEmailResult result = client.sendEmail(request);
+		
+		if(Objects.nonNull(result) && (Objects.nonNull(result.getMessageId()) && !result.getMessageId().isEmpty())) {
+			returnValue = Boolean.TRUE;
+		}
+		
+		return returnValue;
 	}
 }
