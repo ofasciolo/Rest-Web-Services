@@ -19,8 +19,11 @@ import org.springframework.stereotype.Service;
 
 import com.appdeveloperblog.app.ws.exceptions.UserServiceException;
 import com.appdeveloperblog.app.ws.io.entity.AddressEntity;
+import com.appdeveloperblog.app.ws.io.entity.PasswordResetTokenEntity;
 import com.appdeveloperblog.app.ws.io.entity.UserEntity;
+import com.appdeveloperblog.app.ws.io.repositories.PasswordResetTokenRepository;
 import com.appdeveloperblog.app.ws.io.repositories.UserRepository;
+import com.appdeveloperblog.app.ws.security.SecurityConstants;
 import com.appdeveloperblog.app.ws.service.UserService;
 import com.appdeveloperblog.app.ws.shared.AmazonSES;
 import com.appdeveloperblog.app.ws.shared.Utils;
@@ -30,15 +33,18 @@ import com.appdeveloperblog.app.ws.ui.model.response.ErrorMessages;
 
 @Service
 public class UserServiceImpl implements UserService {
-
+	
 	@Autowired
-	UserRepository userRepository; 
+	BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	@Autowired
 	Utils utils; 
 	
 	@Autowired
-	BCryptPasswordEncoder bCryptPasswordEncoder;
+	UserRepository userRepository; 
+	
+	@Autowired
+	PasswordResetTokenRepository passwordResetTokenRepository;
 	
 	//GET
 	@Override
@@ -94,19 +100,19 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override 
-	public boolean verifyEmailToken(String token) {
+	public Boolean verifyEmailToken(String token) {
 		
-		boolean returnValue = false; 
+		Boolean returnValue = Boolean.FALSE; 
 		
 		UserEntity userEntity = userRepository.findByEmailVerificationToken(token); 
 		
 		if(Objects.nonNull(userEntity)) {
-			boolean hasTokenExpired = Utils.hasTokenExpired(token);
-			if(!hasTokenExpired) {
+			Boolean hasTokenExpired = Utils.hasTokenExpired(token);
+			if(Boolean.TRUE.equals(hasTokenExpired)) {
 				userEntity.setEmailVerificationToken(null);
 				userEntity.setEmailVerificationStatus(Boolean.TRUE);
 				userRepository.save(userEntity); 
-				returnValue = true; 
+				returnValue = Boolean.TRUE; 
 			}
 		}
 		
@@ -136,7 +142,7 @@ public class UserServiceImpl implements UserService {
 		UserEntity userEntity = modelMapper.map(user, UserEntity.class);
 		userEntity.setUserId(publicId);
 		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-		userEntity.setEmailVerificationToken(utils.generateEmailVerificationToken(publicId));
+		userEntity.setEmailVerificationToken(utils.generateToken(publicId, SecurityConstants.EMAIL_EXPIRATION_TIME));
 		userEntity.setEmailVerificationStatus(Boolean.FALSE);
 		
 		UserEntity savedUserDetails = userRepository.save(userEntity);
@@ -148,8 +154,26 @@ public class UserServiceImpl implements UserService {
 		return returnValue;
 	}
 	
-	public boolean requestPasswordReset(String email) {
-		return false;
+	public Boolean requestPasswordReset(String email) {
+		
+		Boolean returnValue = Boolean.FALSE; 
+		
+		UserEntity userEntity = userRepository.findByEmail(email);
+		
+		if(Objects.isNull(userEntity)) {
+			return returnValue; 
+		}
+		
+		String token = utils.generateToken(userEntity.getUserId(), SecurityConstants.PASSWORD_EXPIRATION_TIME); 
+		
+		PasswordResetTokenEntity passwordResetTokenEntity = new PasswordResetTokenEntity();
+		passwordResetTokenEntity.setToken(token);
+		passwordResetTokenEntity.setUserDetails(userEntity);
+		passwordResetTokenRepository.save(passwordResetTokenEntity); 
+		
+		returnValue = new AmazonSES().sendPasswordResetRequest(userEntity.getFirstName(), userEntity.getEmail(), token);
+		
+		return returnValue;
 	}
 	
 	//PUT

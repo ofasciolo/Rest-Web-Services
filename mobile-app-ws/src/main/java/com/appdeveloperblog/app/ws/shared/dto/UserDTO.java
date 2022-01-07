@@ -14,7 +14,7 @@ public class UserDTO implements Serializable{
 	private String encryptedPassword;
 	private String email;
 	private String emailVerificationToken; 
-	private Boolean emailVerificationStatus = false;
+	private Boolean emailVerificationStatus = Boolean.FALSE;
 	private List<AddressDTO> addresses; 
 	
 	public long getId() {

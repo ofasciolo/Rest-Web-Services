@@ -12,11 +12,11 @@ public interface UserService extends UserDetailsService{
 	List<UserDTO> getUsers(int page, int limit);
 	UserDTO getUser(String email);
 	UserDTO getUserByUserId(String userId); 
-	boolean verifyEmailToken(String token);
+	Boolean verifyEmailToken(String token);
 	
 	//POST
 	UserDTO createUser(UserDTO user);
-	boolean requestPasswordReset(String email);
+	Boolean requestPasswordReset(String email);
 
 	//PUT
 	UserDTO updateUser(UserDTO user, String userId); 

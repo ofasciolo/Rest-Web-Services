@@ -28,9 +28,9 @@ public class Utils {
 		return tokenExpirationDate.before(new Date());
 	}
 	
-	public String generateEmailVerificationToken(String userId) {
+	public String generateToken(String userId, long expirationTime) {
 		String token = Jwts.builder().setSubject(userId)
-					   .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+					   .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
 					   .signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret()).compact();
 		return token; 
 	}

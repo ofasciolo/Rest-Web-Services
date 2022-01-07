@@ -121,9 +121,9 @@ public class UserController {
 		OperationStatusModel returnValue = new OperationStatusModel(); 
 		returnValue.setOperationName(RequestOperationName.VERIFY_EMAIL.name());
 		
-		boolean isVerified = userService.verifyEmailToken(token); 
+		Boolean isVerified = userService.verifyEmailToken(token); 
 		
-		if(isVerified) {
+		if(Boolean.TRUE.equals(isVerified)) {
 			returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
 		} else {
 			returnValue.setOperationResult(RequestOperationStatus.ERROR.name());
@@ -154,9 +154,14 @@ public class UserController {
 		
 		OperationStatusModel returnValue = new OperationStatusModel(); 
 		
-		boolean operationResult = userService.requestPasswordReset(passwordResetRequestModel.getEmail());
+		Boolean operationResult = userService.requestPasswordReset(passwordResetRequestModel.getEmail());
 	
+		returnValue.setOperationName(RequestOperationName.REQUEST_PASSWORD_RESET.name());
+		returnValue.setOperationResult(RequestOperationStatus.ERROR.name());
 		
+		if(Boolean.TRUE.equals(operationResult)) {
+			returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+		}
 		
 		return returnValue;
 	}
