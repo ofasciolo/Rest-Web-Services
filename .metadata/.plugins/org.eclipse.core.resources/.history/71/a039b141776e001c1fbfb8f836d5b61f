@@ -1,0 +1,29 @@
+package com.appdeveloperblog.app.ws.io.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+import com.appdeveloperblog.app.ws.shared.dto.UserDTO;
+
+@Entity(name = "addresses")
+public class AddressEntity implements Serializable {
+
+	private static final long serialVersionUID = 5368889785901141903L;
+	
+	@Id
+	@GeneratedValue
+	private long id; 
+
+	private String addressId; 
+	private String city; 
+	private String country; 
+	private String streetName; 
+	private String postalCode; 
+	private String type;
+	private UserDTO userDetails;
+	
+	
+}

@@ -1,0 +1,5 @@
+package com.appdeveloperblog.app.ws.exceptions;
+
+public enum AppExceptionsHandler {
+
+}

@@ -1,0 +1,17 @@
+127.0.0.1 - - [06/Jan/2022:19:34:47 -0300] "GET / HTTP/1.1" 404 687
+0:0:0:0:0:0:0:1 - - [06/Jan/2022:19:34:59 -0300] "GET / HTTP/1.1" 404 687
+127.0.0.1 - - [06/Jan/2022:19:35:15 -0300] "GET / HTTP/1.1" 404 687
+0:0:0:0:0:0:0:1 - - [06/Jan/2022:19:35:22 -0300] "GET / HTTP/1.1" 404 687
+0:0:0:0:0:0:0:1 - - [06/Jan/2022:19:35:22 -0300] "GET / HTTP/1.1" 404 687
+0:0:0:0:0:0:0:1 - - [06/Jan/2022:19:36:18 -0300] "GET /verification-service/index.jsp HTTP/1.1" 200 52
+0:0:0:0:0:0:0:1 - - [06/Jan/2022:19:44:53 -0300] "GET /verification-service/index.jsp HTTP/1.1" 200 52
+127.0.0.1 - - [06/Jan/2022:19:45:05 -0300] "GET / HTTP/1.1" 404 687
+0:0:0:0:0:0:0:1 - - [06/Jan/2022:19:45:08 -0300] "GET /verification-service/index.jsp HTTP/1.1" 200 52
+0:0:0:0:0:0:0:1 - - [06/Jan/2022:19:45:10 -0300] "GET /verification-service/index.jsp HTTP/1.1" 200 52
+0:0:0:0:0:0:0:1 - - [06/Jan/2022:19:45:23 -0300] "GET /verification-service/email-verification.html HTTP/1.1" 200 507
+0:0:0:0:0:0:0:1 - - [06/Jan/2022:19:48:27 -0300] "GET /verification-service/email-verification.html?token=sadujhkhdfuew HTTP/1.1" 200 749
+0:0:0:0:0:0:0:1 - - [06/Jan/2022:19:56:40 -0300] "GET /verification-service/email-verification.html?token=sadujhkhdfuew HTTP/1.1" 200 1317
+0:0:0:0:0:0:0:1 - - [06/Jan/2022:19:56:40 -0300] "GET /mobile-app-ws/users/email-verification?token=sadujhkhdfuew HTTP/1.1" 404 733
+127.0.0.1 - - [06/Jan/2022:20:14:27 -0300] "GET / HTTP/1.1" 404 687
+0:0:0:0:0:0:0:1 - - [06/Jan/2022:20:14:30 -0300] "GET /manager/html/ HTTP/1.1" 404 708
+0:0:0:0:0:0:0:1 - - [06/Jan/2022:20:14:35 -0300] "GET /manager/html HTTP/1.1" 404 703

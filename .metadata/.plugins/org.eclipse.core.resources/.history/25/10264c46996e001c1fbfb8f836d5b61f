@@ -1,0 +1,16 @@
+package com.appdeveloperblog.app.ws.service.impl;
+
+import java.util.List;
+
+import com.appdeveloperblog.app.ws.service.AddressService;
+import com.appdeveloperblog.app.ws.shared.dto.AddressDTO;
+
+public class AddressServiceImpl implements AddressService {
+
+	@Override
+	public List<AddressDTO> getAddresses(String userId) {
+		
+		return null;
+	}
+
+}
