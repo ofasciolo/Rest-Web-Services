@@ -37,10 +37,10 @@ public class AmazonSES {
 		
 		AmazonSimpleEmailService client = AmazonSimpleEmailServiceAsyncClientBuilder.standard().withRegion(Regions.SA_EAST_1).build();
 		
-		String htmlBody = EmailConstants.EMAIL_VERIFICATION_HTML_BODY.replace("$tokenValue", token); 
+		String htmlBody = EmailConstants.PASSWORD_RESET_HTML_BODY.replace("$tokenValue", token); 
 		htmlBody = htmlBody.replace("$firstName", firstName);
 		
-		String textBody = EmailConstants.EMAIL_VERIFICATION_TEXT_BODY.replace("$tokenValue", token);
+		String textBody = EmailConstants.PASSWORD_RESET_TEXT_BODY.replace("$tokenValue", token);
 		textBody = textBody.replace("$firstName", firstName);
 		
 		SendEmailRequest request = new SendEmailRequest().withDestination(new Destination().withToAddresses(email))

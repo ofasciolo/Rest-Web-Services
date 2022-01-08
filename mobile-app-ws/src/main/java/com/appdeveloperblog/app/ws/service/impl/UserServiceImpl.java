@@ -154,6 +154,7 @@ public class UserServiceImpl implements UserService {
 		return returnValue;
 	}
 	
+	@Override
 	public Boolean requestPasswordReset(String email) {
 		
 		Boolean returnValue = Boolean.FALSE; 
@@ -176,7 +177,37 @@ public class UserServiceImpl implements UserService {
 		return returnValue;
 	}
 	
+	@Override
+	public Boolean resetPassword(String token, String password) {
+		Boolean returnValue = Boolean.FALSE; 
+		
+		if(Utils.hasTokenExpired(token)) {
+			return returnValue; 
+		}
+		
+		PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenRepository.findByToken(token);
+		
+		if(Objects.isNull(passwordResetTokenEntity)) {
+			return returnValue; 
+		}
+		
+		String encodedPassword = bCryptPasswordEncoder.encode(password);
+		
+		UserEntity userEntity = passwordResetTokenEntity.getUserDetails();
+		userEntity.setEncryptedPassword(encodedPassword);
+		UserEntity savedUserEntity = userRepository.save(userEntity); 
+		
+		if(Objects.nonNull(savedUserEntity) && savedUserEntity.getEncryptedPassword().equalsIgnoreCase(encodedPassword)) {
+			returnValue = Boolean.TRUE;
+		}
+		
+		passwordResetTokenRepository.delete(passwordResetTokenEntity);
+		
+		return returnValue;
+	}
+	
 	//PUT
+	@Override
 	public UserDTO updateUser(UserDTO user, String userId) {
 		
 		UserEntity userEntity = userRepository.findByUserId(userId); 

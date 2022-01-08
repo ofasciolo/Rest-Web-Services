@@ -17,6 +17,7 @@ public interface UserService extends UserDetailsService{
 	//POST
 	UserDTO createUser(UserDTO user);
 	Boolean requestPasswordReset(String email);
+	Boolean resetPassword(String token, String password);
 
 	//PUT
 	UserDTO updateUser(UserDTO user, String userId); 

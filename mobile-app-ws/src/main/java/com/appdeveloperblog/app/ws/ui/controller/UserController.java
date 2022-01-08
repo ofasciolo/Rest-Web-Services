@@ -32,6 +32,7 @@ import com.appdeveloperblog.app.ws.shared.dto.UserDTO;
 import com.appdeveloperblog.app.ws.ui.model.request.UserDetailsRequestModel;
 import com.appdeveloperblog.app.ws.ui.model.response.AddressResponseModel;
 import com.appdeveloperblog.app.ws.ui.model.request.PasswordResetRequestModel;
+import com.appdeveloperblog.app.ws.ui.model.request.RequestPasswordResetRequestModel;
 import com.appdeveloperblog.app.ws.ui.model.response.ErrorMessages;
 import com.appdeveloperblog.app.ws.ui.model.response.OperationStatusModel;
 import com.appdeveloperblog.app.ws.ui.model.response.RequestOperationName;
@@ -150,13 +151,30 @@ public class UserController {
 	}
 	
 	@PostMapping(path = "/password-reset-request", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-	public OperationStatusModel requestPasswordReset(@RequestBody PasswordResetRequestModel passwordResetRequestModel) {
+	public OperationStatusModel requestPasswordReset(@RequestBody RequestPasswordResetRequestModel requestPasswordResetRequestModel) {
 		
 		OperationStatusModel returnValue = new OperationStatusModel(); 
 		
-		Boolean operationResult = userService.requestPasswordReset(passwordResetRequestModel.getEmail());
+		Boolean operationResult = userService.requestPasswordReset(requestPasswordResetRequestModel.getEmail());
 	
 		returnValue.setOperationName(RequestOperationName.REQUEST_PASSWORD_RESET.name());
+		returnValue.setOperationResult(RequestOperationStatus.ERROR.name());
+		
+		if(Boolean.TRUE.equals(operationResult)) {
+			returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+		}
+		
+		return returnValue;
+	}
+	
+	@PostMapping(path = "/password-reset", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+	public OperationStatusModel resetPassword(@RequestBody PasswordResetRequestModel passwordResetRequestModel) {
+		
+		OperationStatusModel returnValue = new OperationStatusModel(); 
+		
+		Boolean operationResult = userService.resetPassword(passwordResetRequestModel.getToken(), passwordResetRequestModel.getPassword());
+	
+		returnValue.setOperationName(RequestOperationName.PASSWORD_RESET.name());
 		returnValue.setOperationResult(RequestOperationStatus.ERROR.name());
 		
 		if(Boolean.TRUE.equals(operationResult)) {
