@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
 		
 		if(Objects.nonNull(userEntity)) {
 			Boolean hasTokenExpired = Utils.hasTokenExpired(token);
-			if(Boolean.TRUE.equals(hasTokenExpired)) {
+			if(Boolean.FALSE.equals(hasTokenExpired)) {
 				userEntity.setEmailVerificationToken(null);
 				userEntity.setEmailVerificationStatus(Boolean.TRUE);
 				userRepository.save(userEntity); 
