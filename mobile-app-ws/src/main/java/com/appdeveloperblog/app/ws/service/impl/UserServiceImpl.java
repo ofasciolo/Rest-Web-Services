@@ -18,7 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.appdeveloperblog.app.ws.exceptions.UserServiceException;
-import com.appdeveloperblog.app.ws.io.entity.AddressEntity;
 import com.appdeveloperblog.app.ws.io.entity.PasswordResetTokenEntity;
 import com.appdeveloperblog.app.ws.io.entity.UserEntity;
 import com.appdeveloperblog.app.ws.io.repositories.PasswordResetTokenRepository;
@@ -45,6 +44,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	PasswordResetTokenRepository passwordResetTokenRepository;
+	
+	@Autowired
+	AmazonSES amazonSES; 
 	
 	//GET
 	@Override
@@ -149,7 +151,7 @@ public class UserServiceImpl implements UserService {
 		
 		UserDTO returnValue = modelMapper.map(savedUserDetails, UserDTO.class);
 		
-		new AmazonSES().verifyEmail(returnValue);
+		amazonSES.verifyEmail(returnValue);
 		
 		return returnValue;
 	}
@@ -172,7 +174,7 @@ public class UserServiceImpl implements UserService {
 		passwordResetTokenEntity.setUserDetails(userEntity);
 		passwordResetTokenRepository.save(passwordResetTokenEntity); 
 		
-		returnValue = new AmazonSES().sendPasswordResetRequest(userEntity.getFirstName(), userEntity.getEmail(), token);
+		returnValue = amazonSES.sendPasswordResetRequest(userEntity.getFirstName(), userEntity.getEmail(), token);
 		
 		return returnValue;
 	}

@@ -2,6 +2,8 @@ package com.appdeveloperblog.app.ws.shared;
 
 import java.util.Objects;
 
+import org.springframework.stereotype.Component;
+
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsyncClientBuilder;
@@ -13,6 +15,7 @@ import com.amazonaws.services.simpleemail.model.SendEmailRequest;
 import com.amazonaws.services.simpleemail.model.SendEmailResult;
 import com.appdeveloperblog.app.ws.shared.dto.UserDTO;
 
+@Component
 public class AmazonSES {
 
 	public void verifyEmail(UserDTO user) {
