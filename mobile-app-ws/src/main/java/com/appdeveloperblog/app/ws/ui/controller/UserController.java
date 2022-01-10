@@ -39,6 +39,10 @@ import com.appdeveloperblog.app.ws.ui.model.response.RequestOperationName;
 import com.appdeveloperblog.app.ws.ui.model.response.RequestOperationStatus;
 import com.appdeveloperblog.app.ws.ui.model.response.UserResponseModel;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -49,6 +53,7 @@ public class UserController {
 	@Autowired
 	AddressService addressService; 
 	
+	@ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "${userController.authorization-header.description}", paramType = "header")})
 	@GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	public List<UserResponseModel> getUsers(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "limit", defaultValue = "25") int limit){
 		
@@ -65,6 +70,8 @@ public class UserController {
 		return returnValue; 
 	}
 	
+	@ApiOperation(value = "Get User Details", notes = "${userController.getUser.apiOperations-notes}")
+	@ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "${userController.authorization-header.description}", paramType = "header")})
 	@GetMapping(path="/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	public UserResponseModel getUser(@PathVariable String userId) {
 		
@@ -76,6 +83,7 @@ public class UserController {
 		return returnValue;
 	}
 	
+	@ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "${userController.authorization-header.description}", paramType = "header")})
 	@GetMapping(path="/{userId}/addresses", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	public CollectionModel<AddressResponseModel> getAddresses(@PathVariable String userId) {
 		
@@ -101,6 +109,7 @@ public class UserController {
 		return CollectionModel.of(new ArrayList<>());
 	}
 	
+	@ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "${userController.authorization-header.description}", paramType = "header")})
 	@GetMapping(path="/{userId}/addresses/{addressId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	public EntityModel<AddressResponseModel> getAddress(@PathVariable String userId, @PathVariable String addressId) {
 		
@@ -184,6 +193,7 @@ public class UserController {
 		return returnValue;
 	}
 	
+	@ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "${userController.authorization-header.description}", paramType = "header")})
 	@PutMapping(path="/{userId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	public UserResponseModel updateUser(@RequestBody UserDetailsRequestModel userDetails, @PathVariable String userId) {
 		
@@ -197,6 +207,7 @@ public class UserController {
 		return returnValue;
 	}
 	
+	@ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "${userController.authorization-header.description}", paramType = "header")})
 	@DeleteMapping(path="/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	public OperationStatusModel deleteUser(@PathVariable String userId) {
 		

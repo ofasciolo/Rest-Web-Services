@@ -9,8 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
 public class UserEntity implements Serializable {
 
 	private static final long serialVersionUID = -3772691377276902875L;
@@ -35,7 +37,7 @@ public class UserEntity implements Serializable {
 	private String encryptedPassword;  
 	
 	@Column(nullable = false)
-	private Boolean emailVerificationStatus = false;
+	private Boolean emailVerificationStatus = Boolean.FALSE;
 
 	private String emailVerificationToken;
 	
