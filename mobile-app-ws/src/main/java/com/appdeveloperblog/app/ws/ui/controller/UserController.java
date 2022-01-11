@@ -3,6 +3,7 @@ package com.appdeveloperblog.app.ws.ui.controller;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +15,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.appdeveloperblog.app.ws.exceptions.UserServiceException;
 import com.appdeveloperblog.app.ws.service.AddressService;
 import com.appdeveloperblog.app.ws.service.UserService;
+import com.appdeveloperblog.app.ws.shared.Roles;
 import com.appdeveloperblog.app.ws.shared.dto.AddressDTO;
 import com.appdeveloperblog.app.ws.shared.dto.UserDTO;
 import com.appdeveloperblog.app.ws.ui.model.request.UserDetailsRequestModel;
@@ -70,6 +74,7 @@ public class UserController {
 		return returnValue; 
 	}
 	
+	@PostAuthorize("hasRole('ADMIN') or returnObject.userId == principal.userId")
 	@ApiOperation(value = "Get User Details", notes = "${userController.getUser.apiOperations-notes}")
 	@ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "${userController.authorization-header.description}", paramType = "header")})
 	@GetMapping(path="/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -152,6 +157,7 @@ public class UserController {
 		ModelMapper modelMapper = new ModelMapper();
 
 		UserDTO userDto = modelMapper.map(userDetails, UserDTO.class);
+		userDto.setRoles(new HashSet<String>(Arrays.asList(Roles.ROLE_USER.name())));
 		
 		UserDTO createUser = userService.createUser(userDto);
 		UserResponseModel returnValue = modelMapper.map(createUser, UserResponseModel.class);
@@ -207,6 +213,7 @@ public class UserController {
 		return returnValue;
 	}
 	
+	@PreAuthorize("hasRole('ADMIN') or #id == principal.userId")
 	@ApiImplicitParams({@ApiImplicitParam(name = "Authorization", value = "${userController.authorization-header.description}", paramType = "header")})
 	@DeleteMapping(path="/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	public OperationStatusModel deleteUser(@PathVariable String userId) {

@@ -1,6 +1,8 @@
 package com.appdeveloperblog.app.ws.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,10 +20,13 @@ import org.springframework.stereotype.Service;
 
 import com.appdeveloperblog.app.ws.exceptions.UserServiceException;
 import com.appdeveloperblog.app.ws.io.entity.PasswordResetTokenEntity;
+import com.appdeveloperblog.app.ws.io.entity.RoleEntity;
 import com.appdeveloperblog.app.ws.io.entity.UserEntity;
 import com.appdeveloperblog.app.ws.io.repositories.PasswordResetTokenRepository;
+import com.appdeveloperblog.app.ws.io.repositories.RoleRepository;
 import com.appdeveloperblog.app.ws.io.repositories.UserRepository;
 import com.appdeveloperblog.app.ws.security.SecurityConstants;
+import com.appdeveloperblog.app.ws.security.UserPrincipal;
 import com.appdeveloperblog.app.ws.service.UserService;
 import com.appdeveloperblog.app.ws.shared.AmazonSES;
 import com.appdeveloperblog.app.ws.shared.Utils;
@@ -47,6 +51,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	AmazonSES amazonSES; 
+	
+	@Autowired
+	RoleRepository roleRepository;
 	
 	//GET
 	@Override
@@ -147,6 +154,17 @@ public class UserServiceImpl implements UserService {
 		userEntity.setEmailVerificationToken(utils.generateToken(publicId, SecurityConstants.EMAIL_EXPIRATION_TIME));
 		userEntity.setEmailVerificationStatus(Boolean.FALSE);
 		
+		Collection<RoleEntity> roles = new HashSet<>();
+		for(String role: user.getRoles()) {
+			RoleEntity roleEntity = roleRepository.findByName(role);
+			
+			if(Objects.nonNull(roleEntity)) {
+				roles.add(roleEntity);
+			}
+		}
+		
+		userEntity.setRoles(roles);
+		
 		UserEntity savedUserDetails = userRepository.save(userEntity);
 		
 		UserDTO returnValue = modelMapper.map(savedUserDetails, UserDTO.class);
@@ -243,12 +261,13 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		
 		UserEntity userEntity = userRepository.findByEmail(email);
 		
 		if(Objects.isNull(userEntity)) {
 			throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage()); 
 		}
 		
-		return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), userEntity.getEmailVerificationStatus(), Boolean.TRUE, Boolean.TRUE, Boolean.TRUE, new ArrayList<>()); 
+		return new UserPrincipal(userEntity);
 	}
 }

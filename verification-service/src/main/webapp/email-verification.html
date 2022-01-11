@@ -14,7 +14,7 @@
 				}
 				
 				function verifyToken(tokenValue){
-					$.getJSON('http://ec2-54-67-70-58.us-west-1.compute.amazonaws.com:8080/mobile-app-ws/users/email-verification', {token: tokenValue})
+					$.getJSON('http://localhost:8080/mobile-app-ws/users/email-verification', {token: tokenValue})
 					.done(function (response){
 						if(response["operationResult"] === "SUCCESS"){
 							$("#not-successful-result").attr("style","display:none !important;");
