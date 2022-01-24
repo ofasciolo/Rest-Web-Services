@@ -1,1 +1,17 @@
-# Rest-Web-Services
+<br />
+<div align="center">
+  <a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  </a>
+
+  <h3 align="center">README</h3>
+
+</div>
+
+### Built With
+
+- [Java](https://www.java.com/)
+- [SpringBoot](https://spring.io/projects/spring-boot)
+- [AWS](https://aws.amazon.com/)
+- [Tomcat](https://tomcat.apache.org/)
+- [MySQL](https://www.mysql.com/)
